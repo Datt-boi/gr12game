@@ -1,5 +1,45 @@
 import random
 
+## Enemies System
+
+current_enemies = []
+
+class Enemy:
+    def __init__(health, name, listname):
+        self.hp = health
+        self.name = name
+        self.listname = listname
+
+    # Deal damage to computer (bot) player
+    def damage_computer(amount):
+
+        self.hp -= amount 
+        print("computer's hp: " + str(bot_hp))
+
+        if self.hp <= 0:
+            self.hp = 0
+            return bot_hp, False # alive = false
+        else:
+            return bot_hp, True # alive = true
+
+## Specific Enemies
+
+class Zombie(Enemy):
+    def __init__():
+        self.hp = 25
+
+
+# Spawn Enemies
+def populate_enemies(amount, enemy_type):
+    for i in range(amount):
+        ("enemy" + str(i+1)) = enemy_type
+
+    return current_enemies
+        
+
+current_enemies = populate_enemies(5, Zombie)
+print(current_enemies)
+
 ## Turn System
 player_hp = 30
 computer_hp = 30
@@ -25,25 +65,11 @@ example_moves_bot = {
 player_class = example_moves_class
 
 # More variables for turn system
-player_turn = False # True = Player's Turn | False = Computer's Turn
+player_turn = True # True = Player's Turn | False = Computer's Turn
 player_move = "" # Name of player's move
 computer_move = "" # Name of Computer's move
 
 move_lands = 0 # Used for calculating if a move hits or misses
-
-# Deal damage to computer (bot) player
-def damage_computer(amount, bot_hp):
-
-    alive = True
-
-    bot_hp -= amount 
-    print("computer's hp: " + str(bot_hp))
-
-    if bot_hp <= 0:
-        alive = False
-        bot_hp = 0
-
-    return bot_hp, alive
 
 
 # When it is the player's turn to attack
@@ -83,7 +109,7 @@ def play_turn_computer(bot_hp, plr_hp):
     print("players's hp: " + str(plr_hp))
 
     # Determine bot's move
-    print(random.choice(example_moves_bot))
+    #print(random.choice(example_moves_bot))
 
      # If 100% chance it ihts
     if player_class[player_move][1] == 100:
