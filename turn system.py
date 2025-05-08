@@ -1,7 +1,22 @@
 import random
 
-## Enemies System
+# Player's moves
+# Sample moves - Name: [Damage, Hitting % Chance]
+example_moves_class = {
+    "Kick": [18, 50],
+    "Stomp": [12, 75],
+    "Shout": [5, 100],
+}
 
+# Bot's moves
+# Sample moves - Name: [Damage, Hitting % Chance]
+example_moves_bot = {
+    "Kick": [18, 50],
+    "Stomp": [12, 75],
+    "Shout": [5, 100],
+}
+
+## Enemies System
 current_enemies = []
 
 class Enemy:
@@ -31,35 +46,22 @@ class Zombie(Enemy):
 
 # Spawn Enemies
 def populate_enemies(amount, enemy_type):
-    for i in range(amount):
-        ("enemy" + str(i+1)) = enemy_type
 
+    print("# enemies: ")
+    
+    for i in range(amount):
+        current_enemies.append(enemy_type)
+        
     return current_enemies
         
 
-current_enemies = populate_enemies(5, Zombie)
+current_enemies = populate_enemies(1, Zombie)
 print(current_enemies)
 
 ## Turn System
 player_hp = 30
 computer_hp = 30
 currently_in_round = True
-
-# Player's moves
-# Sample moves - Name: [Damage, Hitting % Chance]
-example_moves_class = {
-    "Kick": [18, 50],
-    "Stomp": [12, 75],
-    "Shout": [5, 100],
-}
-
-# Bot's moves
-# Sample moves - Name: [Damage, Hitting % Chance]
-example_moves_bot = {
-    "Kick": [18, 50],
-    "Stomp": [12, 75],
-    "Shout": [5, 100],
-}
 
 # Player's class, will be decided at beginning of game
 player_class = example_moves_class
@@ -73,7 +75,7 @@ move_lands = 0 # Used for calculating if a move hits or misses
 
 
 # When it is the player's turn to attack
-def play_turn_player(bot_hp, plr_hp):
+def play_turn_player(bot_hp, plr_hp, enemy):
     
     print("computer's hp: " + str(bot_hp))
         
@@ -142,13 +144,13 @@ def round_cycle(bot_hp, plr_hp):
 
     while currently_in_round == True:
         if player_turn == True:
-            bot_hp, plr_hp = play_turn_player(bot_hp, plr_hp)
+            bot_hp, plr_hp = play_turn_player(bot_hp, plr_hp, current_enemies[0])
 
             if bot_hp <= 0:
                 print("bot died")
             
         else:
-            bot_hp, plr_hp = play_turn_computer(bot_hp, plr_hp)
+            bot_hp, plr_hp = play_turn_computer(bot_hp, plr_hp, current_enemies[0])
 
             if plr_hp <= 0:
                 print("player died")
