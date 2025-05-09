@@ -3,7 +3,7 @@ import random
 # Player's moves
 # Sample moves - Name: [Damage, Hitting % Chance]
 example_moves_class = {
-    "Kick": [18, 50],
+    "Kick": [18, 100],
     "Stomp": [12, 75],
     "Shout": [5, 100],
 }
@@ -11,7 +11,7 @@ example_moves_class = {
 # Bot's moves
 # Sample moves - Name: [Damage, Hitting % Chance]
 example_moves_bot = {
-    "Kick": [18, 50],
+    "Kick": [18, 100],
     "Stomp": [12, 75],
     "Shout": [5, 100],
 }
@@ -20,13 +20,13 @@ example_moves_bot = {
 current_enemies = []
 
 class Enemy:
-    def __init__(health, name, listname):
+    def __init__(self, health, name, listname):
         self.hp = health
         self.name = name
         self.listname = listname
 
     # Deal damage to computer (bot) player
-    def damage_computer(amount):
+    def damage_computer(self, amount):
 
         self.hp -= amount 
         print("computer's hp: " + str(bot_hp))
@@ -85,7 +85,11 @@ def play_turn_player(bot_hp, plr_hp, enemy):
      # If 100% chance it ihts
     if player_class[player_move][1] == 100:
         print("100% chance")
-        bot_hp = damage_computer(player_class[player_move][0], bot_hp)
+
+
+        print(player_class[player_move][0])
+        print(bot_hp)
+        bot_hp = current_enemies[0].damage_computer(player_class[player_move][0])
 
         # Determine if it's a hit or a miss
     else:
@@ -93,7 +97,11 @@ def play_turn_player(bot_hp, plr_hp, enemy):
 
         # If the move lands
         if move_lands <= player_class[player_move][1]:
-            bot_hp, alive = damage_computer(player_class[player_move][0], bot_hp)
+            print("current enemy: " + str(current_enemies[0]))
+
+
+            
+            bot_hp, alive = current_enemies[0].damage_computer(player_class[player_move][0])
             print(alive)
 
         # If it's a miss
@@ -144,6 +152,8 @@ def round_cycle(bot_hp, plr_hp):
 
     while currently_in_round == True:
         if player_turn == True:
+
+            print(current_enemies[0])
             bot_hp, plr_hp = play_turn_player(bot_hp, plr_hp, current_enemies[0])
 
             if bot_hp <= 0:
