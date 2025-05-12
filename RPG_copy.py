@@ -15,10 +15,14 @@ class Players():
     def __init__(self, name, health, move1, move2, move3):
         self.name = name
         self.health = health
+        
         self.move1 = move1
+        
         self.move2 = move2
-        self.move3 = move3
 
+        self.move3 = move3
+        
+    
     def return_move_name1(self):
         return self.move1[0]
     
