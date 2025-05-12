@@ -8,7 +8,60 @@ clock = pygame.time.Clock()
 title = True
 timer = 0
 
-       
+
+# Player's moves
+# Sample moves - Name: [Damage, Hitting % Chance]
+class Players():
+    def __init__(self, name, health, move1, move2, move3):
+        self.name = name
+        self.health = health
+        self.move1 = move1
+        self.move2 = move2
+        self.move3 = move3
+
+    def return_move_name1(self):
+        return self.move1[0]
+    
+    def return_move_name2(self):
+        return self.move2[0]
+    
+    def return_move_name3(self):
+        return self.move3[0]
+    
+    def return_name(self):
+        return self.name
+
+brawler_move1 = ["Kick", 18, 50]
+brawler_move2 = ["Stomp", 12, 75]
+brawler_move3 = ["Shout", 5, 100]
+brawler = Players("Adrian", 50, brawler_move1, brawler_move2, brawler_move3)
+
+wizard_move1 = ["Flame", 18, 50]
+wizard_move2 = ["Ice", 12, 75]
+wizard_move3 = ["Explosion", 5, 100]
+wizard = Players("Isaac", 50, wizard_move1, wizard_move2, wizard_move3)
+    
+player1_moves = {
+    "Kick": [18, 50],
+    "Stomp": [12, 75],
+    "Shout": [5, 100],
+}
+
+player2_moves = {
+    "Punch": [18, 50],
+    "Stab": [12, 75],
+    "Arrow": [5, 100],
+}
+
+# Bot's moves
+# Sample moves - Name: [Damage, Hitting % Chance]
+example_moves_bot = {
+    "Kick": [18, 50],
+    "Stomp": [12, 75],
+    "Shout": [5, 100],
+}
+
+      
 class Screen():
    
     def __init__(self, title, width = 800, height = 600, fill=(0,0,255)):
@@ -129,17 +182,12 @@ defend_button = Box(170, 470, 110, 50, (255,255,255), "TimesNewRoman", (0,0,0), 
 item_button = Box(30, 530, 110, 50, (255,255,255), "TimesNewRoman", (0,0,0), "Item")
 skip_button = Box(170, 530, 110, 50, (255,255,255), "TimesNewRoman", (0,0,0), "Skip")
 
-attack1_button = Box(350, 430, 130, 60, (255,255,255), "TimesNewRoman", (0,0,0), "Attack 1")
-attack2_button = Box(620, 430, 130, 60, (255,255,255), "TimesNewRoman", (0,0,0), "Attack 2")
-attack3_button = Box(350, 510, 130, 60, (255,255,255), "TimesNewRoman", (0,0,0), "Attack 3")
-attack4_button = Box(620, 510, 130, 60, (255,255,255), "TimesNewRoman", (0,0,0), "Attack 4")
-
 item1_button = Box(350, 430, 130, 60, (255,255,255), "TimesNewRoman", (0,0,0), "Item 1")
 item2_button = Box(620, 430, 130, 60, (255,255,255), "TimesNewRoman", (0,0,0), "Item 2")
 item3_button = Box(350, 510, 130, 60, (255,255,255), "TimesNewRoman", (0,0,0), "Item 3")
 item4_button = Box(620, 510, 130, 60, (255,255,255), "TimesNewRoman", (0,0,0), "Item 4")
 
-current_player = Box(325, 175, 150, 50, (255,255,255), "TimesNewRoman", (0,0,0), "Player 1")
+
 
 
 
@@ -151,9 +199,12 @@ toggle = False
 attack_var = 0
 item_var = 0
 
+
 while not done:
     clock.tick(60)
     timer += 1
+
+    current_player = brawler
    
 # CALLING OF screenUpdate
     # function FOR MENU SCREEN
@@ -167,6 +218,8 @@ while not done:
     mouse_click = pygame.mouse.get_pressed()
     # KEY PRESSED OR NOT
     keys = pygame.key.get_pressed()
+
+    
 
    
 
@@ -194,7 +247,9 @@ while not done:
         item_button.showButton(gameScreen.returnTitle())
         skip_button.showButton(gameScreen.returnTitle())
 
-        current_player.showButton(gameScreen.returnTitle())
+        current_name = Box(325, 175, 150, 50, (255,255,255), "TimesNewRoman", (0,0,0), Players.return_name(current_player))
+        current_name.showButton(gameScreen.returnTitle())
+        
        
         attack_barbutton = attack_button.focusCheck(mouse_pos, mouse_click)
         item_barbutton = item_button.focusCheck(mouse_pos, mouse_click)
@@ -210,6 +265,11 @@ while not done:
             attack_var = 1
             item_var = 0
             
+            attack1_button = Box(350, 430, 130, 60, (255,255,255), "TimesNewRoman", (0,0,0), Players.return_move_name1(current_player))
+            attack2_button = Box(620, 430, 130, 60, (255,255,255), "TimesNewRoman", (0,0,0), Players.return_move_name2(current_player))
+            attack3_button = Box(350, 510, 130, 60, (255,255,255), "TimesNewRoman", (0,0,0), Players.return_move_name3(current_player))
+            attack4_button = Box(620, 510, 130, 60, (255,255,255), "TimesNewRoman", (0,0,0), "Attack 4")
+            
             attack1_button.showButton(gameScreen.returnTitle())
             attack2_button.showButton(gameScreen.returnTitle())
             attack3_button.showButton(gameScreen.returnTitle())
@@ -223,7 +283,7 @@ while not done:
             item2_button.showButton(gameScreen.returnTitle())
             item3_button.showButton(gameScreen.returnTitle())
             item4_button.showButton(gameScreen.returnTitle())
- 
+
 
            
     #  CHECKING IF THE EXIT BUTTON HAS BEEN CLICKED OR NOT
