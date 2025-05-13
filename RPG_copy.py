@@ -8,7 +8,50 @@ clock = pygame.time.Clock()
 title = True
 timer = 0
 
+class Player_animate(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y, sx, sy):
+        super().__init__()
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.sx = sx
+        self.sy = sy
+        
+        self.sprites = []
+        self.is_animating = False
+        
+        self.sprites.append(pygame.image.load("Sprites/hero/hero_attack/hero_attack0.png"))
+        self.sprites.append(pygame.image.load("Sprites/hero/hero_attack/hero_attack1.png"))
+        self.sprites.append(pygame.image.load("Sprites/hero/hero_attack/hero_attack2.png"))
+        self.sprites.append(pygame.image.load("Sprites/hero/hero_attack/hero_attack3.png"))
+        self.sprites.append(pygame.image.load("Sprites/hero/hero_attack/hero_attack4.png"))
+        
+        for i in range(5):
+            self.sprites[i] = self.sprites[i] = pygame.transform.scale(self.sprites[i], (self.sx, self.sy))
 
+        
+        self.current_sprite = 0
+        self.image = self.sprites[self.current_sprite]
+
+        self.rect = self.image.get_rect()
+        self.rect.topleft = [self.pos_x, self.pos_y]
+            
+    def animate(self):
+        self.is_animating  = True
+        
+    def update(self):
+        if self.is_animating == True:
+            self.current_sprite += 0.2
+
+            if self.current_sprite >= len(self.sprites):
+                self.current_sprite = 0
+                self.is_animating = False
+                
+            self.image = self.sprites[int(self.current_sprite)]
+
+moving_sprites = pygame.sprite.Group()
+slash_animate = Player_animate(600,200, 100, 100)
+moving_sprites.add(slash_animate)
+        
 # Player's moves
 # Sample moves - Name: [Damage, Hitting % Chance]
 class Players():
@@ -173,7 +216,8 @@ gameScreen = Screen("Game Screen")
 win = menuScreen.makeCurrentScreen()
  
 # Menu Buttons
-play_BUTTON = Button(325, 200, 130, 70, (pygame.image.load("New_Piskel.png")))
+play_BUTTON = Button(325, 200, 130, 70, (pygame.image.load("Sprites/Buttons/New_Piskel.png")))
+
 
 
 # Game Screen Buttons
@@ -181,10 +225,11 @@ black_box = Box(0, 400, 800, 200, (0,0,0), "TimesNewRoman", (0,0,0), "")
 left_gray_box = Box(10, 410, 290, 180, (128,128,128), "TimesNewRoman", (0,0,0), "")
 right_gray_box = Box(310, 410, 480, 180, (128,128,128), "TimesNewRoman", (0,0,0), "")
 
-attack_button = Box(30, 470, 110, 50, (255,255,255), "TimesNewRoman", (0,0,0), "Attack")
-defend_button = Box(170, 470, 110, 50, (255,255,255), "TimesNewRoman", (0,0,0), "Defend")
-item_button = Box(30, 530, 110, 50, (255,255,255), "TimesNewRoman", (0,0,0), "Item")
-skip_button = Box(170, 530, 110, 50, (255,255,255), "TimesNewRoman", (0,0,0), "Skip")
+attack_button = Button(30, 470, 110, 50, (pygame.image.load("Sprites/Buttons/Button_fight.png")))
+defend_button = Button(170, 470, 110, 50, (pygame.image.load("Sprites/Buttons/Button_guard.png")))
+item_button = Button(30, 530, 110, 50, (pygame.image.load("Sprites/Buttons/Button_item.png")))
+skip_button = Button(170, 530, 110, 50, (pygame.image.load("Sprites/Buttons/Button_skip.png")))
+
 
 item1_button = Box(350, 430, 130, 60, (255,255,255), "TimesNewRoman", (0,0,0), "Item 1")
 item2_button = Box(620, 430, 130, 60, (255,255,255), "TimesNewRoman", (0,0,0), "Item 2")
@@ -202,6 +247,8 @@ toggle = False
 
 attack_var = 0
 item_var = 0
+
+
 
 
 while not done:
@@ -251,21 +298,17 @@ while not done:
         item_button.showButton(gameScreen.returnTitle())
         skip_button.showButton(gameScreen.returnTitle())
 
-        current_name = Box(325, 175, 150, 50, (255,255,255), "TimesNewRoman", (0,0,0), Players.return_name(current_player))
-        current_name.showButton(gameScreen.returnTitle())
         
        
         attack_barbutton = attack_button.focusCheck(mouse_pos, mouse_click)
         item_barbutton = item_button.focusCheck(mouse_pos, mouse_click)
 
+        moving_sprites.draw(gameScreen.returnTitle())
+        moving_sprites.update()
+        
 
-        if (mouse_pos[0] >= attack_button.x and mouse_pos[0] <= attack_button.x + attack_button.sx and mouse_pos [1] >= attack_button.y and mouse_pos[1] <= attack_button.y + attack_button.sy):
-            attack_button = Box(30, 470, 110, 50, (150,30,30), "TimesNewRoman", (0,0,0), "Attack")
-
-        else: 
-            attack_button = Box(30, 470, 110, 50, (255,255,255), "TimesNewRoman", (0,0,0), "Attack")
             
-        if attack_barbutton and timer > num or attack_var == 1:
+        if (attack_barbutton and timer > num) or attack_var == 1:
             attack_var = 1
             item_var = 0
             
@@ -279,7 +322,17 @@ while not done:
             attack3_button.showButton(gameScreen.returnTitle())
             attack4_button.showButton(gameScreen.returnTitle())
 
-        if item_barbutton and timer > num or item_var == 1:
+            attack1_barbutton = attack1_button.focusCheck(mouse_pos, mouse_click)
+            attack2_barbutton = attack2_button.focusCheck(mouse_pos, mouse_click)
+            attack3_barbutton = attack3_button.focusCheck(mouse_pos, mouse_click)
+            attack4_barbutton = attack4_button.focusCheck(mouse_pos, mouse_click)
+            
+            if attack1_barbutton or attack2_barbutton or attack3_barbutton or attack4_barbutton :
+                slash_animate.animate()
+
+            
+
+        if (item_barbutton and timer > num) or item_var == 1:
             item_var = 1
             attack_var = 0
             
