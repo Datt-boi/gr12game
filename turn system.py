@@ -28,19 +28,20 @@ class Enemy:
     # Deal damage to computer (bot) player
     def damage_computer(self, amount):
 
+        print("Self: " + str(self))
         self.hp -= amount 
-        print("computer's hp: " + str(bot_hp))
+        print("computer's hp: " + str(current_enemies[0].hp))
 
         if self.hp <= 0:
             self.hp = 0
-            return bot_hp, False # alive = false
+            return current_enemies[0].hp, False # alive = false
         else:
-            return bot_hp, True # alive = true
+            return current_enemies[0].hp, True # alive = true
 
 ## Specific Enemies
 
 class Zombie(Enemy):
-    def __init__():
+    def __init__(self):
         self.hp = 25
 
 
@@ -50,7 +51,7 @@ def populate_enemies(amount, enemy_type):
     print("# enemies: ")
     
     for i in range(amount):
-        current_enemies.append(enemy_type)
+        current_enemies.append(enemy_type())
         
     return current_enemies
         
@@ -89,6 +90,8 @@ def play_turn_player(bot_hp, plr_hp, enemy):
 
         print(player_class[player_move][0])
         print(bot_hp)
+
+        
         bot_hp = current_enemies[0].damage_computer(player_class[player_move][0])
 
         # Determine if it's a hit or a miss
