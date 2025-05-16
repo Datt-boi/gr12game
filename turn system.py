@@ -3,8 +3,8 @@ import random
 # Player's moves
 # Sample moves - Name: [Damage, Hitting % Chance]
 example_moves_class = {
-    "Kick": [18, 100],
-    "Stomp": [12, 75],
+    "Kick": [12, 50],
+    "Stomp": [8, 75],
     "Shout": [5, 100],
 }
 
@@ -20,15 +20,16 @@ example_moves_bot = {
 current_enemies = []
 
 class Enemy:
-    def __init__(self, health, name, listname):
+    def __init__(self, health, name, moves):
         self.hp = health
         self.name = name
-        self.listname = listname
+        self.moves = moves
+
+        print(self.moves)
 
     # Deal damage to computer (bot) player
     def damage_computer(self, amount):
 
-        print("Self: " + str(self))
         self.hp -= amount 
         print("computer's hp: " + str(current_enemies[0].hp))
 
@@ -46,18 +47,15 @@ class Zombie(Enemy):
 
 
 # Spawn Enemies
-def populate_enemies(amount, enemy_type):
-
-    print("# enemies: ")
+def populate_enemies(amount, enemy_type, moves):
     
     for i in range(amount):
         current_enemies.append(enemy_type())
         
     return current_enemies
         
-
-current_enemies = populate_enemies(1, Zombie)
-print(current_enemies)
+# Populates list with enemies
+current_enemies = populate_enemies(1, Zombie, example_moves_bot)
 
 ## Turn System
 player_hp = 30
@@ -85,11 +83,6 @@ def play_turn_player(bot_hp, plr_hp, enemy):
 
      # If 100% chance it ihts
     if player_class[player_move][1] == 100:
-        print("100% chance")
-
-
-        print(player_class[player_move][0])
-        print(bot_hp)
 
         
         bot_hp = current_enemies[0].damage_computer(player_class[player_move][0])
@@ -100,33 +93,28 @@ def play_turn_player(bot_hp, plr_hp, enemy):
 
         # If the move lands
         if move_lands <= player_class[player_move][1]:
-            print("current enemy: " + str(current_enemies[0]))
-
 
             
             bot_hp, alive = current_enemies[0].damage_computer(player_class[player_move][0])
-            print(alive)
 
         # If it's a miss
         else:
             print("Missed your move")
 
-    player_turn = False
 
     # return computer and player health levels
     return bot_hp
 
-# When it's the bot's turn to attack (WIP)
-def play_turn_computer(bot_hp, plr_hp):
+# Bot's attack system
+def play_turn_computer(bot_hp, plr_hp, enemy):
     
     print("players's hp: " + str(plr_hp))
 
     # Determine bot's move
-    #print(random.choice(example_moves_bot))
+    print(random.choice(example_moves_bot))
 
      # If 100% chance it ihts
-    if player_class[player_move][1] == 100:
-        print("100% chance")
+    if enemy[moves][1] == 100: # enemy's move 
         bot_hp = damage_computer(player_class[player_move][0], bot_hp)
 
         # Determine if it's a hit or a miss
@@ -136,39 +124,51 @@ def play_turn_computer(bot_hp, plr_hp):
         # If the move lands
         if move_lands <= player_class[player_move][1]:
             bot_hp, alive = damage_computer(player_class[player_move][0], bot_hp)
-            print(alive)
 
         # If it's a miss
         else:
             print("Missed your move")
 
-    player_turn = False
 
     # return computer and player health levels
     return bot_hp
 
 
 # Manages the entire round (determines who is playing and when someone wins)
-def round_cycle(bot_hp, plr_hp):
-
-    print(bot_hp, plr_hp)
+def round_cycle(bot_hp, plr_hp, player_turn):
 
     while currently_in_round == True:
+
+        # Player's turn
         if player_turn == True:
 
             print(current_enemies[0])
-            bot_hp, plr_hp = play_turn_player(bot_hp, plr_hp, current_enemies[0])
+            bot_hp = play_turn_player(bot_hp, plr_hp, current_enemies[0]) # player attacks
+            print(bot_hp)
 
+            # When bot dies
             if bot_hp <= 0:
                 print("bot died")
-            
-        else:
-            bot_hp, plr_hp = play_turn_computer(bot_hp, plr_hp, current_enemies[0])
+                if len(current_enemies[0]) == 0:
+                    currently_in_round == False 
 
+            # Switches to bot's turn
+            player_turn = False
+
+        # Bot's turn
+        else:
+            print("BOTS TURN")
+            plr_hp = play_turn_computer(bot_hp, plr_hp, current_enemies[0]) # bot attacks
+
+            # When player dies
             if plr_hp <= 0:
                 print("player died")
+                currently_in_round == False 
 
-    return bot_hp, plr_hp
+            # Switches to players's turn
+            player_turn = True
+
+    return bot_hp, plr_hp, player_turn
 
 
-computer_hp, player_hp = round_cycle(computer_hp, player_hp)
+computer_hp, player_hp, player_turn = round_cycle(computer_hp, player_hp, player_turn)
