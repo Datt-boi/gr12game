@@ -44,6 +44,7 @@ class Enemy:
 class Zombie(Enemy):
     def __init__(self):
         self.hp = 25
+        self.moves = example_moves_class # Set the character's moves
 
 
 # Spawn Enemies
@@ -107,24 +108,27 @@ def play_turn_player(bot_hp, plr_hp, enemy):
 
 # Bot's attack system
 def play_turn_computer(bot_hp, plr_hp, enemy):
+
+    enemymoves = enemy.moves
     
     print("players's hp: " + str(plr_hp))
 
     # Determine bot's move
-    print(random.choice(example_moves_bot))
+    move = random.choice(list(enemymoves.items()))
+    print(move)
 
      # If 100% chance it ihts
-    if enemy[moves][1] == 100: # enemy's move 
-        bot_hp = damage_computer(player_class[player_move][0], bot_hp)
+    if move[1] == 100: # enemy's move 
+        # Damage Player
 
         # Determine if it's a hit or a miss
     else:
         move_lands = random.randint(1, 100)
 
         # If the move lands
-        if move_lands <= player_class[player_move][1]:
-            bot_hp, alive = damage_computer(player_class[player_move][0], bot_hp)
-
+        if move_lands <= move[1]:
+            # Damage player
+            
         # If it's a miss
         else:
             print("Missed your move")
