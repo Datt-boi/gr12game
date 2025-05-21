@@ -73,6 +73,11 @@ computer_move = "" # Name of Computer's move
 
 move_lands = 0 # Used for calculating if a move hits or misses
 
+def damage_player(amount):
+    plr_hp = player_hp
+    plr_hp -= amount
+    return plr_hp
+
 
 # When it is the player's turn to attack
 def play_turn_player(bot_hp, plr_hp, enemy):
@@ -115,19 +120,20 @@ def play_turn_computer(bot_hp, plr_hp, enemy):
 
     # Determine bot's move
     move = random.choice(list(enemymoves.items()))
-    print(move)
+    print("Move: " + str(move))
 
      # If 100% chance it ihts
-    if move[1] == 100: # enemy's move 
-        # Damage Player
+    if move[1][1] == 100: # enemy's move 
+        plr_hp = damage_player(move[1][0]) # Damage Player
 
         # Determine if it's a hit or a miss
     else:
         move_lands = random.randint(1, 100)
 
         # If the move lands
-        if move_lands <= move[1]:
-            # Damage player
+
+        if move_lands <= int(move[1][1]):
+            plr_hp = damage_player(move[1][0]) # Damage Player
             
         # If it's a miss
         else:
@@ -135,7 +141,7 @@ def play_turn_computer(bot_hp, plr_hp, enemy):
 
 
     # return computer and player health levels
-    return bot_hp
+    return plr_hp
 
 
 # Manages the entire round (determines who is playing and when someone wins)
@@ -148,13 +154,15 @@ def round_cycle(bot_hp, plr_hp, player_turn):
 
             print(current_enemies[0])
             bot_hp = play_turn_player(bot_hp, plr_hp, current_enemies[0]) # player attacks
-            print(bot_hp)
+            print("bot HP: " + str(bot_hp))
 
             # When bot dies
-            if bot_hp <= 0:
+            if bot_hp[0] <= 0:
                 print("bot died")
-                if len(current_enemies[0]) == 0:
-                    currently_in_round == False 
+                current_enemies.pop(0) # remove enemy from list
+                if len(current_enemies) == 0:
+                    currently_in_round == False
+                    print("Round Ended")
 
             # Switches to bot's turn
             player_turn = False
