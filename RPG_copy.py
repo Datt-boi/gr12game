@@ -7,6 +7,7 @@ clock = pygame.time.Clock()
 
 title = True
 timer = 0
+time = 0
 
 enemy_hp = 30
 MOUSEUP = pygame.MOUSEBUTTONUP
@@ -62,6 +63,27 @@ class Player_animate(pygame.sprite.Sprite):
             self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt3.png"))
             self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt4.png"))
 
+        #enemy dead animation
+        elif self.name == "enemy_dead_animate":
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt0.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt1.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt2.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt3.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt4.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyattack/Enemy_attack0.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead0.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead1.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead2.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead3.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
+
         #resizes the images
         for i in range(len(self.sprites)):
             self.sprites[i] = self.sprites[i] = pygame.transform.scale(self.sprites[i], (self.sx, self.sy))
@@ -94,11 +116,17 @@ class Player_animate(pygame.sprite.Sprite):
             if self.current_sprite >= len(self.sprites):
                 self.current_sprite = 0
                 self.is_animating = False
+                
+                
+                
                 if self.name == "hero_attack_animate":
                     hero_static_animate.animate()
 
                 if self.name == "enemy_hurt_animate":
                     enemy_static_animate.animate()
+
+                if self.name == "enemy_dead_animate":
+                    time = timer
                 
             self.image = self.sprites[int(self.current_sprite)]
     
@@ -127,6 +155,11 @@ enemy_static_group.add(enemy_static_animate)
 enemy_hurt_group = pygame.sprite.Group()
 enemy_hurt_animate = Player_animate("enemy_hurt_animate", 100, 200, 100, 100)
 enemy_hurt_group.add(enemy_hurt_animate)
+
+#create enemy hurt animation object
+enemy_dead_group = pygame.sprite.Group()
+enemy_dead_animate = Player_animate("enemy_dead_animate", 100, 200, 100, 100)
+enemy_dead_group.add(enemy_dead_animate)
         
 # Player's moves
 # Sample moves - Name: [Damage, Hitting % Chance]
@@ -340,9 +373,6 @@ enemy_hp_black_box = Box(70, 155, 210, 20, (0,0,0), "TimesNewRoman", 35, (0,0,0)
 enemy_hp_red_box = Box(75, 160, 200, 10, (125,0,0), "TimesNewRoman", 35, (0,0,0), "")
 
 
-
-
-
 enemy_died = Box(250, 115, 0, 0, (0,50,125), "TimesNewRoman", 35, (0,0,0), "You defeated the enemy")
 
 
@@ -426,8 +456,12 @@ while not done:
         
         if enemy_hp <= 0:
             enemy_hp = 0
-            enemy_died.showButton(gameScreen.returnTitle())
-            enemy_static_animate.not_animate()
+            
+
+            if timer - 270 >= time:
+                enemy_died.showButton(gameScreen.returnTitle())
+                enemy_static_animate.not_animate()
+            
             
         #displays boxes and buttons
         black_box.showButton(gameScreen.returnTitle())
@@ -487,6 +521,12 @@ while not done:
 
             if enemy_hp > 0:
                 enemy_damage_taken_box.showButton(gameScreen.returnTitle())
+
+        if enemy_dead_animate.return_animate() == True:  
+            enemy_dead_group.draw(gameScreen.returnTitle())
+            enemy_dead_group.update()
+            
+            
             
 
         
@@ -495,22 +535,23 @@ while not done:
         #if attack button is pressed, shows different attacks   
         if ((attack_barbutton and timer > num) or attack_var == 1):
             
-                
-            attack_var = 1
-            item_var = 0
-
+            if enemy_hp > 0:  
+                attack_var = 1
+                item_var = 0
+            
             #creates and displays the four attacks
             attack1_button = Button(370, 430, 130, 60, (pygame.image.load("Sprites/Buttons/Button_chop.png")))
             attack2_button = Button(600, 430, 130, 60, (pygame.image.load("Sprites/Buttons/Button_slice.png")))
             attack3_button = Button(370, 510, 130, 60, (pygame.image.load("Sprites/Buttons/Button_stab.png")))
             attack4_button = Button(600, 510, 130, 60, (pygame.image.load("Sprites/Buttons/Button_kick.png")))
 
-                
+               
             attack1_button.showButton(gameScreen.returnTitle())
             attack2_button.showButton(gameScreen.returnTitle())
             attack3_button.showButton(gameScreen.returnTitle())
             attack4_button.showButton(gameScreen.returnTitle())
 
+            
             #variables to check if buttons have been pressed
             attack1_barbutton = attack1_button.focusCheck(mouse_pos, mouse_click)
             attack2_barbutton = attack2_button.focusCheck(mouse_pos, mouse_click)
@@ -525,21 +566,23 @@ while not done:
                     hero_static_animate.not_animate()
                     hero_attack_animate.animate()
 
-                    enemy_static_animate.not_animate()
-                    enemy_hurt_animate.animate()
-
-                    
-                    
                     
                     enemy_damage_taken = str(random.randint(5,15))
                     int_enemy_damage_taken = int(enemy_damage_taken)
                     enemy_hp -= int(enemy_damage_taken)
 
                     enemy_hp_red_box.health_deplete(enemy_hp, int_enemy_damage_taken)
-
+                    
                     
                     if enemy_hp <= 0:
                         enemy_hp = 0
+
+                        enemy_static_animate.not_animate()
+                        enemy_dead_animate.animate()
+
+                    else:
+                        enemy_static_animate.not_animate()
+                        enemy_hurt_animate.animate()
                     
                 
             #if button has been pressed, stop static image and start hurt animation
@@ -550,15 +593,16 @@ while not done:
             
         #if item button has been pressed, shows item options
         
-        if (item_barbutton and timer > num) or item_var == 1:
-            item_var = 1
-            attack_var = 0
+        if ((item_barbutton and timer > num) or item_var == 1):
+            if enemy_hp > 0:  
+                item_var = 1
+                attack_var = 0
             
             
-            item1_button.showButton(gameScreen.returnTitle())
-            item2_button.showButton(gameScreen.returnTitle())
-            item3_button.showButton(gameScreen.returnTitle())
-            item4_button.showButton(gameScreen.returnTitle())
+                item1_button.showButton(gameScreen.returnTitle())
+                item2_button.showButton(gameScreen.returnTitle())
+                item3_button.showButton(gameScreen.returnTitle())
+                item4_button.showButton(gameScreen.returnTitle())
 
 
            
