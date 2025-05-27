@@ -35,7 +35,7 @@ class Player_animate(pygame.sprite.Sprite):
 
         #one image to output when not animating enemy
         if self.name == "enemy_static_animate":
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemy_hurt0.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyattack/Enemy_attack0.png"))
             self.is_animating = True
 
         #hero attack animation
@@ -56,11 +56,11 @@ class Player_animate(pygame.sprite.Sprite):
 
         #enemy hurt animation
         elif self.name == "enemy_hurt_animate":
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemy_hurt0.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemy_hurt1.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemy_hurt2.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemy_hurt3.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemy_hurt4.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt0.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt1.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt2.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt3.png"))
+            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt4.png"))
 
         #resizes the images
         for i in range(len(self.sprites)):
@@ -315,6 +315,8 @@ menuScreen = Screen("Menu Screen")
 # CREATING THE OBJECT OF THE CLASS
 # Screen FOR CONTROL SCREEN
 gameScreen = Screen("Game Screen")
+
+gameScreen_background = Button(0, 0, 800, 600, (pygame.image.load("Sprites/RPG Background-1.png.png")))
  
  
 # CALLING OF THE FUNCTION TO
@@ -322,7 +324,7 @@ gameScreen = Screen("Game Screen")
 win = menuScreen.makeCurrentScreen()
  
 # Menu Buttons
-play_BUTTON = Button(290, 200, 220, 140, (pygame.image.load("Sprites/Buttons/New_Piskel.png")))
+play_BUTTON = Button(310, 200, 180, 72, (pygame.image.load("Sprites/Buttons/Button_PLAY.png")))
 
 
 
@@ -341,7 +343,7 @@ enemy_hp_red_box = Box(75, 160, 200, 10, (125,0,0), "TimesNewRoman", 35, (0,0,0)
 
 
 
-enemy_died = Box(200, 100, 100, 30, (0,50,125), "TimesNewRoman", 35, (0,0,0), "You defeated the enemy")
+enemy_died = Box(250, 115, 0, 0, (0,50,125), "TimesNewRoman", 35, (0,0,0), "You defeated the enemy")
 
 
 # Game Screen Buttons
@@ -381,7 +383,7 @@ while not done:
     current_player = brawler
     name_text = Box(10, 420, 290, 20, (128,128,128), "TimesNewRoman", 23, (0,0,0), Players.return_name(current_player))
     hp_text = Box(10, 442, 60, 20, (128,128,128), "TimesNewRoman", 23, (0,0,0), str(Players.return_hp(current_player)))
-    enemy_hp_text = Box(10, 157, 60, 20, (0,50,125), "TimesNewRoman", 23, (0,0,0), str(enemy_hp))
+    enemy_hp_text = Box(40, 167, 0, 0, (0,50,125), "TimesNewRoman", 23, (0,0,0), str(enemy_hp))
     
 # CALLING OF screenUpdate
     # function FOR MENU SCREEN
@@ -414,8 +416,9 @@ while not done:
     # CHECKING GAME SCREEN FOR ITS UPDATE
     elif gameScreen.checkUpdate((0, 50, 125)):
        
-        enemy_damage_taken_box = Box(175, 200, 0, 0, (0,50,125), "TimesNewRoman",  35, (155,0,0), "-" + enemy_damage_taken)
         
+
+        gameScreen_background.showButton(gameScreen.returnTitle())
         
 
         name_text.showButton(gameScreen.returnTitle())
@@ -442,8 +445,7 @@ while not done:
         
         name_text.showButton(gameScreen.returnTitle())
         
-        if enemy_hp > 0:
-            enemy_damage_taken_box.showButton(gameScreen.returnTitle())
+        
         
         attack_button.showButton(gameScreen.returnTitle())
         guard_button.showButton(gameScreen.returnTitle())
@@ -481,6 +483,10 @@ while not done:
         if enemy_hurt_animate.return_animate() == True:  
             enemy_hurt_group.draw(gameScreen.returnTitle())
             enemy_hurt_group.update()
+            enemy_damage_taken_box = Box(175, 200, 0, 0, (0,50,125), "TimesNewRoman",  35, (155,0,0), "-" + enemy_damage_taken)
+
+            if enemy_hp > 0:
+                enemy_damage_taken_box.showButton(gameScreen.returnTitle())
             
 
         
@@ -494,10 +500,10 @@ while not done:
             item_var = 0
 
             #creates and displays the four attacks
-            attack1_button = Box(350, 430, 130, 60, (255,255,255), "TimesNewRoman", 35, (0,0,0), Players.return_move_name1(current_player))
-            attack2_button = Box(620, 430, 130, 60, (255,255,255), "TimesNewRoman", 35, (0,0,0), Players.return_move_name2(current_player))
-            attack3_button = Box(350, 510, 130, 60, (255,255,255), "TimesNewRoman", 35, (0,0,0), Players.return_move_name3(current_player))
-            attack4_button = Box(620, 510, 130, 60, (255,255,255), "TimesNewRoman", 35, (0,0,0), "Shout")
+            attack1_button = Button(370, 430, 130, 60, (pygame.image.load("Sprites/Buttons/Button_chop.png")))
+            attack2_button = Button(600, 430, 130, 60, (pygame.image.load("Sprites/Buttons/Button_slice.png")))
+            attack3_button = Button(370, 510, 130, 60, (pygame.image.load("Sprites/Buttons/Button_stab.png")))
+            attack4_button = Button(600, 510, 130, 60, (pygame.image.load("Sprites/Buttons/Button_kick.png")))
 
                 
             attack1_button.showButton(gameScreen.returnTitle())
