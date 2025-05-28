@@ -126,7 +126,8 @@ class Player_animate(pygame.sprite.Sprite):
                     enemy_static_animate.animate()
 
                 if self.name == "enemy_dead_animate":
-                    time = timer
+                    timer = 0
+                    
                 
             self.image = self.sprites[int(self.current_sprite)]
     
@@ -458,7 +459,8 @@ while not done:
             enemy_hp = 0
             
 
-            if timer - 270 >= time:
+            if timer >= (time + 335) and enemy_dead_animate.return_animate() != True:
+                print(timer)
                 enemy_died.showButton(gameScreen.returnTitle())
                 enemy_static_animate.not_animate()
             
