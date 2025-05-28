@@ -76,13 +76,7 @@ class Player_animate(pygame.sprite.Sprite):
             self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead2.png"))
             self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead3.png"))
             self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
+            
 
         #resizes the images
         for i in range(len(self.sprites)):
@@ -127,6 +121,7 @@ class Player_animate(pygame.sprite.Sprite):
 
                 if self.name == "enemy_dead_animate":
                     timer = 0
+                    pygame.time.delay(1400)
                     
                 
             self.image = self.sprites[int(self.current_sprite)]
@@ -459,8 +454,7 @@ while not done:
             enemy_hp = 0
             
 
-            if timer >= (time + 335) and enemy_dead_animate.return_animate() != True:
-                print(timer)
+            if timer >= (time + 360) and enemy_dead_animate.return_animate() != True:
                 enemy_died.showButton(gameScreen.returnTitle())
                 enemy_static_animate.not_animate()
             
