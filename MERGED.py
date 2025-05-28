@@ -1,6 +1,30 @@
 import pygame
 import random
 
+# Player's moves
+# Sample moves - Name: [Damage, Hitting % Chance]
+example_moves_class = {
+    "Kick": [12, 50],
+    "Stomp": [8, 75],
+    "Shout": [5, 100],
+}
+
+# Bot's moves
+# Sample moves - Name: [Damage, Hitting % Chance]
+example_moves_bot = {
+    "Kick": [18, 100],
+    "Stomp": [12, 75],
+    "Shout": [5, 100],
+}
+
+#Enemy information table
+# Name and animations for enemy
+enemies_list = {
+    "Demon": "Sprites/Enemy/Enemyhurt/Enemy_hurt",
+    "Skeleton": "Sprites/Enemy/Enemyhurt/Enemy_hurt",
+    "Warrior": "Sprites/Enemy/Enemyhurt/Enemy_hurt",
+    "Goober": "Sprites/Enemy/Enemyhurt/Enemy_hurt",
+}
 
 
 clock = pygame.time.Clock()
@@ -76,13 +100,7 @@ class Player_animate(pygame.sprite.Sprite):
             self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead2.png"))
             self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead3.png"))
             self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
+            
 
         #resizes the images
         for i in range(len(self.sprites)):
@@ -127,6 +145,7 @@ class Player_animate(pygame.sprite.Sprite):
 
                 if self.name == "enemy_dead_animate":
                     timer = 0
+                    pygame.time.delay(1400)
                     
                 
             self.image = self.sprites[int(self.current_sprite)]
@@ -406,7 +425,7 @@ enemy_damage_taken = ""
 
 
 while not done:
-    clock.tick(30)
+    clock.tick(60)
     timer += 1
 
     #test to see if attack options will change based on what this variable is
@@ -459,8 +478,7 @@ while not done:
             enemy_hp = 0
             
 
-            if timer >= (time + 335) and enemy_dead_animate.return_animate() != True:
-                print(timer)
+            if timer >= (time + 360) and enemy_dead_animate.return_animate() != True:
                 enemy_died.showButton(gameScreen.returnTitle())
                 enemy_static_animate.not_animate()
             
