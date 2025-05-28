@@ -157,7 +157,7 @@ def round_cycle(bot_hp, plr_hp, player_turn):
             print("bot HP: " + str(bot_hp))
 
             # When bot dies
-            if bot_hp[0] <= 0:
+            if bot_hp <= 0:
                 print("bot died")
                 current_enemies.pop(0) # remove enemy from list
                 if len(current_enemies) == 0:
@@ -170,6 +170,7 @@ def round_cycle(bot_hp, plr_hp, player_turn):
         # Bot's turn
         else:
             print("BOTS TURN")
+            print(current_enemies)
             plr_hp = play_turn_computer(bot_hp, plr_hp, current_enemies[0]) # bot attacks
 
             # When player dies
