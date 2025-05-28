@@ -147,6 +147,8 @@ def play_turn_computer(bot_hp, plr_hp, enemy):
 # Manages the entire round (determines who is playing and when someone wins)
 def round_cycle(bot_hp, plr_hp, player_turn):
 
+    
+    currently_in_round = True
     while currently_in_round == True:
 
         # Player's turn
@@ -161,7 +163,7 @@ def round_cycle(bot_hp, plr_hp, player_turn):
                 print("bot died")
                 current_enemies.pop(0) # remove enemy from list
                 if len(current_enemies) == 0:
-                    currently_in_round == False
+                    currently_in_round = False
                     print("Round Ended")
 
             # Switches to bot's turn
@@ -171,12 +173,14 @@ def round_cycle(bot_hp, plr_hp, player_turn):
         else:
             print("BOTS TURN")
             print(current_enemies)
+
+            
             plr_hp = play_turn_computer(bot_hp, plr_hp, current_enemies[0]) # bot attacks
 
             # When player dies
             if plr_hp <= 0:
                 print("player died")
-                currently_in_round == False 
+                currently_in_round = False 
 
             # Switches to players's turn
             player_turn = True
