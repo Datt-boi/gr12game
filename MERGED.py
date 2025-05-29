@@ -27,6 +27,29 @@ enemies_list = {
 }
 
 
+#class for spawning an enemy sprite
+class spawn_sprite(name):
+    self.name = name
+    self.pos_x = pos_x
+    self.pos_y = pos_y
+    self.sx = sx
+    self.sy = sy
+
+    self.hurt_sprites = []
+    self.attack_sprites = []
+    self.dead_sprites = []
+    self.is_animating = False
+
+    if self.name == "Demon":
+        self.hurt_sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt0.png"))
+        self.hurt_sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt1.png"))
+        self.hurt_sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt2.png"))
+        self.hurt_sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt3.png"))
+        self.hurt_sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt4.png"))
+
+        
+
+
 clock = pygame.time.Clock()
 
 title = True
@@ -39,8 +62,7 @@ MOUSEUP = pygame.MOUSEBUTTONUP
 enemy_hit = False
 
 
-#class for spawning an enemy sprite
-class spawn_sprite(name):
+    
     
 #class to create animations
 class Player_animate(pygame.sprite.Sprite):
@@ -427,7 +449,7 @@ enemy_damage_taken = ""
 
 
 while not done:
-    clock.tick(30)
+    clock.tick(60)
     timer += 1
 
     #test to see if attack options will change based on what this variable is
