@@ -425,7 +425,7 @@ enemy_damage_taken = ""
 
 
 while not done:
-    clock.tick(60)
+    clock.tick(30)
     timer += 1
 
     #test to see if attack options will change based on what this variable is
