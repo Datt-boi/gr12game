@@ -39,6 +39,8 @@ MOUSEUP = pygame.MOUSEBUTTONUP
 enemy_hit = False
 
 
+#class for spawning an enemy sprite
+class spawn_sprite(name):
     
 #class to create animations
 class Player_animate(pygame.sprite.Sprite):
