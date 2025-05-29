@@ -28,26 +28,14 @@ enemies_list = {
 
 
 #class for spawning an enemy sprite
-class spawn_sprite(name):
-    self.name = name
-    self.pos_x = pos_x
-    self.pos_y = pos_y
-    self.sx = sx
-    self.sy = sy
+class spawn_sprite:
+    def __init__(self, name):
+        self.name = name
+        print(name)
 
-    self.hurt_sprites = []
-    self.attack_sprites = []
-    self.dead_sprites = []
-    self.is_animating = False
 
-    if self.name == "Demon":
-        self.hurt_sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt0.png"))
-        self.hurt_sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt1.png"))
-        self.hurt_sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt2.png"))
-        self.hurt_sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt3.png"))
-        self.hurt_sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt4.png"))
-
-        
+print(enemies_list['Demon'])
+sprite = spawn_sprite(enemies_list['Demon'])
 
 
 clock = pygame.time.Clock()
