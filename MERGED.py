@@ -20,111 +20,136 @@ example_moves_bot = {
 #Enemy information table
 # Name and animations for enemy
 enemies_list = {
-    "Demon": "Sprites/Enemy/Enemyhurt/Enemy_hurt",
+    "Demon": "Sprites/Enemy/Demon/",
     "Skeleton": "Sprites/Enemy/Enemyhurt/Enemy_hurt",
     "Warrior": "Sprites/Enemy/Enemyhurt/Enemy_hurt",
     "Goober": "Sprites/Enemy/Enemyhurt/Enemy_hurt",
 }
 
+players_list = {
+    "Hero": "Sprites/hero/Hero_"
+}
+
 
 #class for spawning an enemy sprite
 class spawn_sprite:
-    def __init__(self, name):
-        self.name = name
-        print(name)
-
-
-print(enemies_list['Demon'])
-sprite = spawn_sprite(enemies_list['Demon'])
-
-
-clock = pygame.time.Clock()
-
-title = True
-timer = 0
-time = 0
-
-enemy_hp = 30
-MOUSEUP = pygame.MOUSEBUTTONUP
-
-enemy_hit = False
-
-
-    
-    
-#class to create animations
-class Player_animate(pygame.sprite.Sprite):
-    def __init__(self, name, pos_x, pos_y, sx, sy):
-        super().__init__()
-        self.name = name
+    def __init__(self, file, name, pos_x, pos_y, sx, sy):
+        self.file = file
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.sx = sx
         self.sy = sy
+        self.name = name
+  
+        self.hurt_sprites = []
+        self.dead_sprites = []
+        self.attack_sprites = []
+        self.idle_sprite = []
         
-        self.sprites = []
-        self.is_animating = False
-        
-        #one image to output when not animating hero
-        if self.name == "hero_static_animate":
-            self.sprites.append(pygame.image.load("Sprites/hero/hero_attack/hero_attack0.png"))
-            self.is_animating = True
+        self.hurt_is_animating = False
+        self.attack_is_animating = False
+        self.dead_is_animating = False
+        self.idle_is_animating = True
 
-        #one image to output when not animating enemy
-        if self.name == "enemy_static_animate":
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyattack/Enemy_attack0.png"))
-            self.is_animating = True
+        for i in range(4):
+            self.attack_sprites.append(pygame.image.load(self.file + "attack" + str(i) + ".png"))
 
-        #hero attack animation
-        elif self.name == "hero_attack_animate":
-            self.sprites.append(pygame.image.load("Sprites/hero/hero_attack/hero_attack0.png"))
-            self.sprites.append(pygame.image.load("Sprites/hero/hero_attack/hero_attack1.png"))
-            self.sprites.append(pygame.image.load("Sprites/hero/hero_attack/hero_attack2.png"))
-            self.sprites.append(pygame.image.load("Sprites/hero/hero_attack/hero_attack3.png"))
-            self.sprites.append(pygame.image.load("Sprites/hero/hero_attack/hero_attack4.png"))
+        for i in range(4):
+            self.dead_sprites.append(pygame.image.load(self.file + "dead" + str(i)+ ".png"))
+
+        for i in range(4):
+            self.hurt_sprites.append(pygame.image.load(self.file + "hurt" + str(i) + ".png"))
+
+        self.idle_sprite.append(pygame.image.load(self.file + "attack0.png"))
+
+
+        for i in range(len(self.attack_sprites)):
+            self.attack_sprites[i] = self.attack_sprites[i] = pygame.transform.scale(self.attack_sprites[i], (self.sx, self.sy))
+
+        for i in range(len(self.hurt_sprites)):
+            self.hurt_sprites[i] = self.hurt_sprites[i] = pygame.transform.scale(self.hurt_sprites[i], (self.sx, self.sy))
             
-        #hero hurt animation
-        elif self.name == "hero_hurt_animate":
-            self.sprites.append(pygame.image.load("Sprites/hero/hero_hurt/hero_hurt0.png"))
-            self.sprites.append(pygame.image.load("Sprites/hero/hero_hurt/hero_hurt1.png"))
-            self.sprites.append(pygame.image.load("Sprites/hero/hero_hurt/hero_hurt2.png"))
-            self.sprites.append(pygame.image.load("Sprites/hero/hero_hurt/hero_hurt3.png"))
-            self.sprites.append(pygame.image.load("Sprites/hero/hero_hurt/hero_hurt4.png"))
+        for i in range(len(self.dead_sprites)):
+            self.dead_sprites[i] = self.dead_sprites[i] = pygame.transform.scale(self.dead_sprites[i], (self.sx, self.sy))
 
-        #enemy hurt animation
-        elif self.name == "enemy_hurt_animate":
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt0.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt1.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt2.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt3.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt4.png"))
+        self.idle_sprite[0] = self.idle_sprite[0] = pygame.transform.scale(self.idle_sprite[0], (self.sx, self.sy))
 
-        #enemy dead animation
-        elif self.name == "enemy_dead_animate":
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt0.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt1.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt2.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt3.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyhurt/Enemy_hurt4.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemyattack/Enemy_attack0.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead0.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead1.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead2.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead3.png"))
-            self.sprites.append(pygame.image.load("Sprites/Enemy/Enemydead/Enemy_dead4.png"))
-            
-
-        #resizes the images
-        for i in range(len(self.sprites)):
-            self.sprites[i] = self.sprites[i] = pygame.transform.scale(self.sprites[i], (self.sx, self.sy))
-
-        
         self.current_sprite = 0
-        self.image = self.sprites[self.current_sprite]
+    
 
-        self.rect = self.image.get_rect()
-        self.rect.topleft = [self.pos_x, self.pos_y]
 
+    #used mainly to stop static image   
+    def idle_not_animate(self):
+        self.idle_is_animating = False
+
+    #starts animation
+    def idle_animate(self):
+        self.idle_is_animating  = True
+
+    #used to check if currently animating
+    def return_hurt_animate(self):
+        if self.hurt_is_animating == True:
+            return True
+
+    def return_dead_animate(self):
+        if self.dead_is_animating == True:
+            return True
+
+    def return_attack_animate(self):
+        if self.attack_is_animating == True:
+            return True
+
+    def return_idle_animate(self):
+        if self.idle_is_animating == True:
+            return True
+    def return_name(self):
+        return self.name
+       
+    def showIdle(self, display):
+        display.blit(self.idle_sprite[0], (self.pos_x,self.pos_y))
+
+    def hurt_animate(self):
+        self.hurt_is_animating  = True
+
+    def attack_animate(self):
+        self.attack_is_animating  = True
+
+    def dead_animate(self):
+        self.dead_is_animating  = True
+
+    def showAttack(self, display):
+        if self.attack_is_animating == True:
+            display.blit(self.attack_sprites[int(self.current_sprite)], (self.pos_x,self.pos_y))
+            self.current_sprite += 0.2
+
+            if self.current_sprite >= len(self.attack_sprites):
+                self.current_sprite = 0
+                self.attack_is_animating = False
+                self.idle_animate()
+                
+    def showHurt(self, display):
+        if self.hurt_is_animating == True:
+            display.blit(self.hurt_sprites[int(self.current_sprite)], (self.pos_x,self.pos_y))
+            self.current_sprite += 0.2
+
+            if self.current_sprite >= len(self.hurt_sprites):
+                self.current_sprite = 0
+                self.hurt_is_animating = False
+                self.idle_animate()
+
+    def showDead(self, display):
+        if self.dead_is_animating == True:
+            display.blit(self.dead_sprites[int(self.current_sprite)], (self.pos_x,self.pos_y))
+            self.current_sprite += 0.2
+
+            if self.current_sprite >= len(self.dead_sprites):
+                self.current_sprite = 0
+                self.dead_is_animating = False
+                pygame.time.delay(1400)
+                    
+                
+            
+            
     #used mainly to stop static image   
     def not_animate(self):
         self.is_animating = False
@@ -138,101 +163,27 @@ class Player_animate(pygame.sprite.Sprite):
         if self.is_animating == True:
             return True
         
-    #goes through list and animates
-    def update(self):
-        if self.is_animating == True:
-            self.current_sprite += 0.2
-
-            if self.current_sprite >= len(self.sprites):
-                self.current_sprite = 0
-                self.is_animating = False
-                
-                
-                
-                if self.name == "hero_attack_animate":
-                    hero_static_animate.animate()
-
-                if self.name == "enemy_hurt_animate":
-                    enemy_static_animate.animate()
-
-                if self.name == "enemy_dead_animate":
-                    timer = 0
-                    pygame.time.delay(1400)
-                    
-                
-            self.image = self.sprites[int(self.current_sprite)]
     
-#A container class to hold and manage multiple Sprite objects
-#create attack animation object
-hero_attack_group = pygame.sprite.Group()
-hero_attack_animate = Player_animate("hero_attack_animate", 600,200, 100, 100)
-hero_attack_group.add(hero_attack_animate)
-
-#create hurt animation object
-hero_hurt_group = pygame.sprite.Group()
-hero_hurt_animate = Player_animate("hero_hurt_animate", 600,200, 100, 100)
-hero_hurt_group.add(hero_hurt_animate)
-
-#create static animation object
-hero_static_group = pygame.sprite.Group()
-hero_static_animate = Player_animate("hero_static_animate", 600,200, 100, 100)
-hero_static_group.add(hero_static_animate)
-
-#create static animation object
-enemy_static_group = pygame.sprite.Group()
-enemy_static_animate = Player_animate("enemy_static_animate", 100, 200, 100, 100)
-enemy_static_group.add(enemy_static_animate)
-
-#create enemy hurt animation object
-enemy_hurt_group = pygame.sprite.Group()
-enemy_hurt_animate = Player_animate("enemy_hurt_animate", 100, 200, 100, 100)
-enemy_hurt_group.add(enemy_hurt_animate)
-
-#create enemy hurt animation object
-enemy_dead_group = pygame.sprite.Group()
-enemy_dead_animate = Player_animate("enemy_dead_animate", 100, 200, 100, 100)
-enemy_dead_group.add(enemy_dead_animate)
-        
-# Player's moves
-# Sample moves - Name: [Damage, Hitting % Chance]
-class Players():
-    def __init__(self, name, health, move1, move2, move3):
-        self.name = name
-        self.health = health
-        
-        self.move1 = move1
-        
-        self.move2 = move2
-
-        self.move3 = move3
         
     
-    def return_move_name1(self):
-        return self.move1[0]
-    
-    def return_move_name2(self):
-        return self.move2[0]
-    
-    def return_move_name3(self):
-        return self.move3[0]
-    
-    def return_name(self):
-        return self.name
 
-    def return_hp(self):
-        return self.health
 
-#create list with temporary moves and create brawler player
-brawler_move1 = ["Kick", 18, 50]
-brawler_move2 = ["Stomp", 12, 75]
-brawler_move3 = ["Shout", 5, 100]
-brawler = Players("Adrian", 50, brawler_move1, brawler_move2, brawler_move3)
 
-#create list with temporary moves and create wizard player
-wizard_move1 = ["Flame", 18, 50]
-wizard_move2 = ["Ice", 12, 75]
-wizard_move3 = ["Explosion", 5, 100]
-wizard = Players("Isaac", 50, wizard_move1, wizard_move2, wizard_move3)
+sprite = spawn_sprite(enemies_list['Demon'], "Demon", 100, 200, 100, 100)
+hero = spawn_sprite(players_list['Hero'], "Adrian", 600, 200, 100, 100)
+
+
+clock = pygame.time.Clock()
+
+title = True
+timer = 0
+time = 0
+
+enemy_hp = 30
+MOUSEUP = pygame.MOUSEBUTTONUP
+
+enemy_hit = False
+
     
 
 #to create screens 
@@ -440,11 +391,9 @@ while not done:
     clock.tick(60)
     timer += 1
 
-    #test to see if attack options will change based on what this variable is
-    #options are 'brawler' and 'wizard'
-    current_player = brawler
-    name_text = Box(10, 420, 290, 20, (128,128,128), "TimesNewRoman", 23, (0,0,0), Players.return_name(current_player))
-    hp_text = Box(10, 442, 60, 20, (128,128,128), "TimesNewRoman", 23, (0,0,0), str(Players.return_hp(current_player)))
+    
+    name_text = Box(10, 420, 290, 20, (128,128,128), "TimesNewRoman", 23, (0,0,0), spawn_sprite.return_name(hero))
+    hp_text = Box(10, 442, 60, 20, (128,128,128), "TimesNewRoman", 23, (0,0,0), str(50))
     enemy_hp_text = Box(40, 167, 0, 0, (0,50,125), "TimesNewRoman", 23, (0,0,0), str(enemy_hp))
     
 # CALLING OF screenUpdate
@@ -490,9 +439,9 @@ while not done:
             enemy_hp = 0
             
 
-            if timer >= (time + 360) and enemy_dead_animate.return_animate() != True:
+            if timer >= (time + 360) and sprite.return_dead_animate() != True:
                 enemy_died.showButton(gameScreen.returnTitle())
-                enemy_static_animate.not_animate()
+                sprite.idle_not_animate()
             
             
         #displays boxes and buttons
@@ -524,39 +473,35 @@ while not done:
         item_barbutton = item_button.focusCheck(mouse_pos, mouse_click)
 
         #to display static image
-        if hero_static_animate.return_animate() == True:  
-            hero_static_group.draw(gameScreen.returnTitle())
+        if hero.return_idle_animate() == True:  
+            hero.showIdle(gameScreen.returnTitle())
             
         #to display attack animation
-        elif hero_attack_animate.return_animate() == True:  
-            hero_attack_group.draw(gameScreen.returnTitle())
-            hero_attack_group.update()
+        elif hero.return_attack_animate() == True:  
+            hero.showAttack(gameScreen.returnTitle())
 
         #to display hurt animation
-        elif hero_hurt_animate.return_animate() == True:  
-            hero_hurt_group.draw(gameScreen.returnTitle())
-            hero_hurt_group.update()
+        elif hero.return_hurt_animate() == True:  
+            hero.showHurt(gameScreen.returnTitle())
 
         if enemy_hp_red_box.return_health_deplete() == True:
             enemy_hp_red_box.health_depleting()
 
 
         #to display static image
-        if enemy_static_animate.return_animate() == True:  
-            enemy_static_group.draw(gameScreen.returnTitle())
+        if sprite.return_idle_animate() == True:  
+            sprite.showIdle(gameScreen.returnTitle())
             
         #to display attack animation
-        if enemy_hurt_animate.return_animate() == True:  
-            enemy_hurt_group.draw(gameScreen.returnTitle())
-            enemy_hurt_group.update()
+        if sprite.return_hurt_animate() == True:  
+            sprite.showHurt(gameScreen.returnTitle())
             enemy_damage_taken_box = Box(175, 200, 0, 0, (0,50,125), "TimesNewRoman",  35, (155,0,0), "-" + enemy_damage_taken)
 
             if enemy_hp > 0:
                 enemy_damage_taken_box.showButton(gameScreen.returnTitle())
 
-        if enemy_dead_animate.return_animate() == True:  
-            enemy_dead_group.draw(gameScreen.returnTitle())
-            enemy_dead_group.update()
+        if sprite.return_dead_animate() == True:
+            sprite.showDead(gameScreen.returnTitle())
             
             
             
@@ -591,12 +536,12 @@ while not done:
             attack4_barbutton = attack4_button.focusCheck(mouse_pos, mouse_click)
 
             #if button has been pressed, stop static image and start attack animation
-            if (attack1_barbutton or attack2_barbutton or attack3_barbutton or attack4_barbutton) and current_player == brawler and enemy_hp > 0:
+            if (attack1_barbutton or attack2_barbutton or attack3_barbutton or attack4_barbutton) and enemy_hp > 0:
                 ev = pygame.event.wait()
                 if ev.type == MOUSEUP:
                     
-                    hero_static_animate.not_animate()
-                    hero_attack_animate.animate()
+                    hero.idle_not_animate()
+                    hero.attack_animate()
 
                     
                     enemy_damage_taken = str(random.randint(5,15))
@@ -609,18 +554,14 @@ while not done:
                     if enemy_hp <= 0:
                         enemy_hp = 0
 
-                        enemy_static_animate.not_animate()
-                        enemy_dead_animate.animate()
+                        sprite.idle_not_animate()
+                        sprite.dead_animate()
 
                     else:
-                        enemy_static_animate.not_animate()
-                        enemy_hurt_animate.animate()
+                        sprite.idle_not_animate()
+                        sprite.hurt_animate()
                     
                 
-            #if button has been pressed, stop static image and start hurt animation
-            elif (attack1_barbutton or attack2_barbutton or attack3_barbutton or attack4_barbutton) and current_player == wizard :
-                hero_static_animate.not_animate()
-                hero_hurt_animate.animate()
 
             
         #if item button has been pressed, shows item options
