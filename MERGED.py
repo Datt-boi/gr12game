@@ -1,6 +1,7 @@
 import pygame
 import random
 
+
 # Player's moves
 # Sample moves - Name: [Damage, Hitting % Chance]
 example_moves_class = {
@@ -195,7 +196,7 @@ enemy_hp = 30
 MOUSEUP = pygame.MOUSEBUTTONUP
 
 enemy_hit = False
-
+player_turn = True
     
 
 #to create screens 
@@ -516,13 +517,15 @@ while not done:
             sprite.showDead(gameScreen.returnTitle())
             
             
-            
+        if player_turn == False and enemy_hp > 0 :
+            print("sigma")
+            player_turn = True
 
         
         
         
         #if attack button is pressed, shows different attacks   
-        if ((attack_barbutton and timer > num) or attack_var == 1):
+        if ((attack_barbutton and timer > num) or attack_var == 1) and player_turn == True:
             
             if enemy_hp > 0:  
                 attack_var = 1
@@ -559,6 +562,7 @@ while not done:
                     enemy_damage_taken = str(random.randint(5,15))
                     int_enemy_damage_taken = int(enemy_damage_taken)
                     enemy_hp -= int(enemy_damage_taken)
+                    player_turn = False
 
                     enemy_hp_red_box.health_deplete(enemy_hp, int_enemy_damage_taken)
                     
