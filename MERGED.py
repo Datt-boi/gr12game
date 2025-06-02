@@ -54,11 +54,22 @@ class spawn_sprite:
         for i in range(4):
             self.attack_sprites.append(pygame.image.load(self.file + "attack" + str(i) + ".png"))
 
-        for i in range(4):
-            self.dead_sprites.append(pygame.image.load(self.file + "dead" + str(i)+ ".png"))
+        self.dead_sprites.append(pygame.image.load(self.file + "dead0.png"))
+        self.dead_sprites.append(pygame.image.load(self.file + "dead1.png"))
+        self.dead_sprites.append(pygame.image.load(self.file + "dead2.png"))
+        self.dead_sprites.append(pygame.image.load(self.file + "dead3.png"))
+        self.dead_sprites.append(pygame.image.load(self.file + "dead4.png"))
+        self.dead_sprites.append(pygame.image.load(self.file + "dead4.png"))
+        self.dead_sprites.append(pygame.image.load(self.file + "dead4.png"))
+        self.dead_sprites.append(pygame.image.load(self.file + "dead4.png"))
+        self.dead_sprites.append(pygame.image.load(self.file + "dead4.png"))
+        self.dead_sprites.append(pygame.image.load(self.file + "dead4.png"))
+        self.dead_sprites.append(pygame.image.load(self.file + "dead4.png"))
+        
 
         for i in range(4):
             self.hurt_sprites.append(pygame.image.load(self.file + "hurt" + str(i) + ".png"))
+            
 
         self.idle_sprite.append(pygame.image.load(self.file + "attack0.png"))
 
@@ -71,6 +82,7 @@ class spawn_sprite:
             
         for i in range(len(self.dead_sprites)):
             self.dead_sprites[i] = self.dead_sprites[i] = pygame.transform.scale(self.dead_sprites[i], (self.sx, self.sy))
+            
 
         self.idle_sprite[0] = self.idle_sprite[0] = pygame.transform.scale(self.idle_sprite[0], (self.sx, self.sy))
 
@@ -145,7 +157,7 @@ class spawn_sprite:
             if self.current_sprite >= len(self.dead_sprites):
                 self.current_sprite = 0
                 self.dead_is_animating = False
-                pygame.time.delay(1400)
+                
                     
                 
             
@@ -170,7 +182,7 @@ class spawn_sprite:
 
 
 sprite = spawn_sprite(enemies_list['Demon'], "Demon", 100, 200, 100, 100)
-hero = spawn_sprite(players_list['Hero'], "Adrian", 600, 200, 100, 100)
+hero = spawn_sprite(players_list['Hero'], "Antonio", 600, 200, 100, 100)
 
 
 clock = pygame.time.Clock()
