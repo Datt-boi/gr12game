@@ -196,7 +196,9 @@ cashpool = 5
 tea= 0
 tonic= 0
 elixer = 0
-potion = 0
+potion = 5
+
+enemy_dead = False
 
 
 #to create screens 
@@ -379,11 +381,11 @@ item3_button = Box(350, 510, 130, 60, (255,255,255), "TimesNewRoman", 35, (0,0,0
 item4_button = Box(620, 510, 130, 60, (255,255,255), "TimesNewRoman", 35, (0,0,0), "Accuracy elixer")
 
 #item shop looks/buttons
-item_menu= Box(200, 100, 400, 300, (0,0,0), "TimesNewRoman", 20, (255,255,255), "hello item!")
-potion_button = Button(300,150, 110,50, (pygame.image.load("Sprites/Buttons/Button_fight.png")))
-elixer_button = Button(300,350, 110,50, (pygame.image.load("Sprites/Buttons/Button_fight.png")))
-tonic_button = Button(450,150, 110,50, (pygame.image.load("Sprites/Buttons/Button_fight.png")))
-tea_button = Button(450,350, 110,50, (pygame.image.load("Sprites/Buttons/Button_fight.png")))
+item_menu = Box(200, 50, 400, 300, (0,0,0), "TimesNewRoman", 20, (255,255,255), "")
+potion_button = Button(270, 140, 110,50, (pygame.image.load("Sprites/Buttons/Button_fight.png")))
+elixer_button = Button(270, 210, 110,50, (pygame.image.load("Sprites/Buttons/Button_fight.png")))
+tonic_button = Button(420, 140, 110,50, (pygame.image.load("Sprites/Buttons/Button_fight.png")))
+tea_button = Button(420, 210, 110,50, (pygame.image.load("Sprites/Buttons/Button_fight.png")))
 
 
 
@@ -450,13 +452,14 @@ while not done:
             enemy_hp = 0
             
 
-            if timer >= (time + 360) and sprite.return_dead_animate() != True and complete == False:
+            if (timer >= (time + 150) and sprite.return_dead_animate() != True and complete == False) or enemy_dead == True:
                 enemy_died.showButton(gameScreen.returnTitle())
                 sprite.idle_not_animate()
                 complete = True
+                enemy_dead = True
                 cash = cash + cashpool
                 
-                print(cashpool)
+                
             
             
         #displays boxes and buttons
@@ -558,7 +561,7 @@ while not done:
                         if ev.type == MOUSEUP:
                             elixer-=1
                             print("damage up!")
-                    else:
+                    elif item1 or item2 or item3 or item4:
                         ev = pygame.event.wait()
                         if ev.type == MOUSEUP:
                             print("you ain't got that item!")
@@ -616,6 +619,7 @@ while not done:
 
                         sprite.idle_not_animate()
                         sprite.dead_animate()
+                        time = timer
 
                     else:
                         sprite.idle_not_animate()
@@ -635,7 +639,7 @@ while not done:
             tonic_click = tonic_button.focusCheck(mouse_pos, mouse_click)
             tea_click = tea_button.focusCheck(mouse_pos, mouse_click)
             
-            if (tea_click, tonic_click, elixer_click, potion_click):
+            if (tea_click or tonic_click or elixer_click or potion_click):
                 ev = pygame.event.wait()
                 if ev.type == MOUSEUP:
                     if tea_click and cash >= 4:
