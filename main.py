@@ -31,6 +31,17 @@ players_list = {
     "Hero": "Sprites/hero/Hero_"
 }
 
+def attack(hitchance, damage):
+    hit=random.randint(1,100)
+    if hit <= hitchance:
+        enemy_damage_taken = str(random.randint(damage-5,damage+5))
+        int_enemy_damage_taken = int(enemy_damage_taken)
+        print (int_enemy_damage_taken)
+        return int_enemy_damage_taken
+    else:
+        print("MISS!")
+        return 0
+
 
 #class for spawning an enemy sprite
 class spawn_sprite:
@@ -452,7 +463,7 @@ while not done:
             enemy_hp = 0
             
 
-            if (timer >= (time + 150) and sprite.return_dead_animate() != True and complete == False) or enemy_dead == True:
+            if (timer >= (time + 150) and sprite.return_dead_animate() != True and complete == False) or enemy_dead == True and complete == False:
                 enemy_died.showButton(gameScreen.returnTitle())
                 sprite.idle_not_animate()
                 complete = True
@@ -601,10 +612,26 @@ while not done:
             if (attack1_barbutton or attack2_barbutton or attack3_barbutton or attack4_barbutton) and enemy_hp > 0:
                 ev = pygame.event.wait()
                 if ev.type == MOUSEUP:
-                    
-                    hero.idle_not_animate()
-                    hero.attack_animate()
-
+                    if attack1_barbutton:
+                        hero.idle_not_animate()
+                        hero.attack_animate()
+                        enemy_hp -= attack(50,12)
+                        player_turn = False
+                    elif attack2_barbutton:
+                        hero.idle_not_animate()
+                        hero.attack_animate()
+                        enemy_hp -= attack(75,8)
+                        player_turn = False
+                    elif attack3_barbutton:
+                        hero.idle_not_animate()
+                        hero.attack_animate()
+                        enemy_hp -= attack(100,5)
+                        player_turn = False
+                    elif attack4_barbutton:
+                        hero.idle_not_animate()
+                        hero.attack_animate()
+                        enemy_hp -= attack(100,5)
+                        player_turn = False
                     
                     enemy_damage_taken = str(random.randint(5,15))
                     int_enemy_damage_taken = int(enemy_damage_taken)
