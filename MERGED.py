@@ -149,6 +149,7 @@ class spawn_sprite:
                 self.current_sprite = 0
                 self.hurt_is_animating = False
                 self.idle_animate()
+                
 
     def showDead(self, display):
         if self.dead_is_animating == True:
@@ -193,10 +194,16 @@ timer = 0
 time = 0
 
 enemy_hp = 30
+plr_hp = 50
+
+move_lands = 0
+
 MOUSEUP = pygame.MOUSEBUTTONUP
 
 enemy_hit = False
 player_turn = True
+
+
     
 
 #to create screens 
@@ -331,8 +338,38 @@ class Box():
            
             if self.sx <= (self.hp/30) * 200:
                 self.is_depleting = False
-                
- 
+
+
+moves_bot = [["Kick",18,100],["Stomp",12,75],["Shout",5,100]]
+    
+
+
+
+def play_turn_computer(plr_hp):
+    # Determine bot's move
+    move = random.choice(moves_bot)
+    print(move)
+    print("Move: " + move[0])
+
+     # If 100% chance it ihts
+    if moves_bot[2] == 100: # enemy's move 
+        plr_hp = plr_hp - moves_bot[1] # Damage Player
+
+        # Determine if it's a hit or a miss
+    else:
+        move_lands = random.randint(1, 100)
+
+        # If the move lands
+
+        if move_lands <= move[2]:
+            plr_hp = plr_hp - move[1] # Damage Player
+            print("new hp:", plr_hp)
+            return(plr_hp)
+            
+        # If it's a miss
+        else:
+            print("Computer missed move")
+            
 
 pygame.init()
 
@@ -406,7 +443,7 @@ while not done:
 
     
     name_text = Box(10, 420, 290, 20, (128,128,128), "TimesNewRoman", 23, (0,0,0), spawn_sprite.return_name(hero))
-    hp_text = Box(10, 442, 60, 20, (128,128,128), "TimesNewRoman", 23, (0,0,0), str(50))
+    hp_text = Box(10, 442, 60, 20, (128,128,128), "TimesNewRoman", 23, (0,0,0), str(plr_hp))
     enemy_hp_text = Box(40, 167, 0, 0, (0,50,125), "TimesNewRoman", 23, (0,0,0), str(enemy_hp))
     
 # CALLING OF screenUpdate
@@ -517,9 +554,7 @@ while not done:
             sprite.showDead(gameScreen.returnTitle())
             
             
-        if player_turn == False and enemy_hp > 0 :
-            print("sigma")
-            player_turn = True
+       
 
         
         
@@ -554,7 +589,8 @@ while not done:
             if (attack1_barbutton or attack2_barbutton or attack3_barbutton or attack4_barbutton) and enemy_hp > 0:
                 ev = pygame.event.wait()
                 if ev.type == MOUSEUP:
-                    
+
+                    time = timer
                     hero.idle_not_animate()
                     hero.attack_animate()
 
@@ -573,9 +609,17 @@ while not done:
                         sprite.idle_not_animate()
                         sprite.dead_animate()
 
+                        
+
+                        
+
                     else:
                         sprite.idle_not_animate()
                         sprite.hurt_animate()
+                        player_turn = False
+
+                        
+                        plr_hp = play_turn_computer(plr_hp)
                     
                 
 
