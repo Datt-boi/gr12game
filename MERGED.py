@@ -340,35 +340,7 @@ class Box():
                 self.is_depleting = False
 
 
-moves_bot = [["Kick",18,100],["Stomp",12,75],["Shout",5,100]]
-    
 
-
-
-def play_turn_computer(plr_hp):
-    # Determine bot's move
-    move = random.choice(moves_bot)
-    print(move)
-    print("Move: " + move[0])
-
-     # If 100% chance it ihts
-    if moves_bot[2] == 100: # enemy's move 
-        plr_hp = plr_hp - moves_bot[1] # Damage Player
-
-        # Determine if it's a hit or a miss
-    else:
-        move_lands = random.randint(1, 100)
-
-        # If the move lands
-
-        if move_lands <= move[2]:
-            plr_hp = plr_hp - move[1] # Damage Player
-            print("new hp:", plr_hp)
-            return(plr_hp)
-            
-        # If it's a miss
-        else:
-            print("Computer missed move")
             
 
 pygame.init()
