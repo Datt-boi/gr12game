@@ -31,6 +31,17 @@ players_list = {
     "Hero": "Sprites/hero/Hero_"
 }
 
+def attack(hitchance, damage):
+    hit=random.randint(1,100)
+    if hit <= hitchance:
+        enemy_damage_taken = str(random.randint(damage-5,damage+5))
+        int_enemy_damage_taken = int(enemy_damage_taken)
+        print (int_enemy_damage_taken)
+        return int_enemy_damage_taken
+    else:
+        print("MISS!")
+        return 0
+
 
 #class for spawning an enemy sprite
 class spawn_sprite:
@@ -41,7 +52,7 @@ class spawn_sprite:
         self.sx = sx
         self.sy = sy
         self.name = name
-  
+
         self.hurt_sprites = []
         self.dead_sprites = []
         self.attack_sprites = []
@@ -88,7 +99,7 @@ class spawn_sprite:
         self.idle_sprite[0] = self.idle_sprite[0] = pygame.transform.scale(self.idle_sprite[0], (self.sx, self.sy))
 
         self.current_sprite = 0
-    
+
 
 
     #used mainly to stop static image   
@@ -117,7 +128,7 @@ class spawn_sprite:
             return True
     def return_name(self):
         return self.name
-       
+
     def showIdle(self, display):
         display.blit(self.idle_sprite[0], (self.pos_x,self.pos_y))
 
@@ -139,7 +150,7 @@ class spawn_sprite:
                 self.current_sprite = 0
                 self.attack_is_animating = False
                 self.idle_animate()
-                
+
     def showHurt(self, display):
         if self.hurt_is_animating == True:
             display.blit(self.hurt_sprites[int(self.current_sprite)], (self.pos_x,self.pos_y))
@@ -158,11 +169,7 @@ class spawn_sprite:
             if self.current_sprite >= len(self.dead_sprites):
                 self.current_sprite = 0
                 self.dead_is_animating = False
-                
-                    
-                
-            
-            
+
     #used mainly to stop static image   
     def not_animate(self):
         self.is_animating = False
@@ -175,10 +182,7 @@ class spawn_sprite:
     def return_animate(self):
         if self.is_animating == True:
             return True
-        
-    
-        
-    
+
 
 
 
@@ -191,17 +195,26 @@ clock = pygame.time.Clock()
 title = True
 timer = 0
 time = 0
-
+complete = False
 enemy_hp = 30
 MOUSEUP = pygame.MOUSEBUTTONUP
 
 enemy_hit = False
 player_turn = True
-    
+
+cash = 0
+cashpool = 5
+tea= 0
+tonic= 0
+elixer = 0
+potion = 5
+
+enemy_dead = False
+
 
 #to create screens 
 class Screen():
-   
+
     def __init__(self, title, width = 800, height = 600, fill=(0,0,255)):
         self.height = height
         self.title = title
@@ -227,7 +240,7 @@ class Screen():
 
     def returnTitle(self):
         return self.screen
-   
+
 
 
 #to create buttons with images
@@ -238,14 +251,14 @@ class Button():
         self.picture = pygame.transform.scale(picture, (sx, sy))
         self.sx = sx
         self.sy = sy
-       
+
         self.CurrentState = False
-       
-    
+
+
     def showButton(self, display):
         display.blit(self.picture, (self.x,self.y))
-           
-       
+
+
     #checks if mouse is clicked on button
     def focusCheck(self, mousepos, mouseclick):
         if (mousepos[0] >= self.x and mousepos[0] <= self.x + self.sx and mousepos [1] >= self.y and mousepos[1] <= self.y + self.sy):
@@ -281,8 +294,8 @@ class Box():
 
         else:
             pygame.draw.rect(display, self.fbcolor, (self.x, self.y, self.sx, self.sy))
-           
-       
+
+
         textsurface = self.buttonf.render(self.text, False, self.fcolor)
         display.blit(textsurface, ((self.x + (self.sx/2)-(self.fontsize/2)*(len(self.text)/2)+2, (self.y +(self.sy/2)-(self.fontsize/2)-4))))
         
@@ -317,26 +330,22 @@ class Box():
             
             
             if self.hit:
-           
+
                 self.pixels_delete = (self.damage/(self.hp+self.damage)) * self.sx
             
                 self.hit = False
-                
-                
-           
+
             enemy_hp_red_box = Box(75, 160, self.sx -(self.pixels_delete/30), 10, (125,0,0), "TimesNewRoman", 35, (0,0,0), "")
-           
 
             self.sx = self.sx -(self.pixels_delete/30)
-           
+
             if self.sx <= (self.hp/30) * 200:
                 self.is_depleting = False
                 
- 
+        
 
 pygame.init()
 
- 
 # CREATING THE OBJECT OF THE
 # CLASS Screen FOR MENU SCREEN
 menuScreen = Screen("Menu Screen")
@@ -346,12 +355,11 @@ menuScreen = Screen("Menu Screen")
 gameScreen = Screen("Game Screen")
 
 gameScreen_background = Button(0, 0, 800, 600, (pygame.image.load("Sprites/RPG Background-1.png.png")))
- 
- 
+
 # CALLING OF THE FUNCTION TO
 # MAKE THE SCREEN FOR THE WINDOW
 win = menuScreen.makeCurrentScreen()
- 
+
 # Menu Buttons
 play_BUTTON = Button(310, 200, 180, 72, (pygame.image.load("Sprites/Buttons/Button_PLAY.png")))
 
@@ -368,7 +376,6 @@ hp_red_box = Box(75, 445, 200, 10, (125,0,0), "TimesNewRoman", 35, (0,0,0), "")
 enemy_hp_black_box = Box(70, 155, 210, 20, (0,0,0), "TimesNewRoman", 35, (0,0,0), "")
 enemy_hp_red_box = Box(75, 160, 200, 10, (125,0,0), "TimesNewRoman", 35, (0,0,0), "")
 
-
 enemy_died = Box(250, 115, 0, 0, (0,50,125), "TimesNewRoman", 35, (0,0,0), "You defeated the enemy")
 
 
@@ -379,18 +386,22 @@ item_button = Button(30, 530, 110, 50, (pygame.image.load("Sprites/Buttons/Butto
 skip_button = Button(170, 530, 110, 50, (pygame.image.load("Sprites/Buttons/Button_skip.png")))
 
 
-item1_button = Box(350, 430, 130, 60, (255,255,255), "TimesNewRoman", 35, (0,0,0), "Item 1")
-item2_button = Box(620, 430, 130, 60, (255,255,255), "TimesNewRoman", 35, (0,0,0), "Item 2")
-item3_button = Box(350, 510, 130, 60, (255,255,255), "TimesNewRoman", 35, (0,0,0), "Item 3")
-item4_button = Box(620, 510, 130, 60, (255,255,255), "TimesNewRoman", 35, (0,0,0), "Item 4")
+item1_button = Box(350, 430, 130, 60, (255,255,255), "TimesNewRoman", 35, (0,0,0), "Heal Potion")
+item2_button = Box(620, 430, 130, 60, (255,255,255), "TimesNewRoman", 35, (0,0,0), "Speed tea")
+item3_button = Box(350, 510, 130, 60, (255,255,255), "TimesNewRoman", 35, (0,0,0), "Guard Tonic")
+item4_button = Box(620, 510, 130, 60, (255,255,255), "TimesNewRoman", 35, (0,0,0), "Accuracy elixer")
+
+#item shop looks/buttons
+item_menu = Box(200, 50, 400, 300, (0,0,0), "TimesNewRoman", 20, (255,255,255), "")
+potion_button = Button(270, 140, 110,50, (pygame.image.load("Sprites/Buttons/Button_fight.png")))
+elixer_button = Button(270, 210, 110,50, (pygame.image.load("Sprites/Buttons/Button_fight.png")))
+tonic_button = Button(420, 140, 110,50, (pygame.image.load("Sprites/Buttons/Button_fight.png")))
+tea_button = Button(420, 210, 110,50, (pygame.image.load("Sprites/Buttons/Button_fight.png")))
 
 
 
-
-
- 
 done = False
- 
+
 #used so buttons aren't created over eachother
 attack_var = 0
 item_var = 0
@@ -429,7 +440,7 @@ while not done:
     if menuScreen.checkUpdate((0, 125, 125)):
         play_BUTTON.showButton(menuScreen.returnTitle())
         play_barbutton = play_BUTTON.focusCheck(mouse_pos, mouse_click)
- 
+
         if play_barbutton:
             ev = pygame.event.wait()
             if ev.type == MOUSEUP:
@@ -439,7 +450,7 @@ while not done:
             
     # CHECKING GAME SCREEN FOR ITS UPDATE
     elif gameScreen.checkUpdate((0, 50, 125)):
-       
+
         
 
         gameScreen_background.showButton(gameScreen.returnTitle())
@@ -452,9 +463,14 @@ while not done:
             enemy_hp = 0
             
 
-            if timer >= (time + 360) and sprite.return_dead_animate() != True:
+            if (timer >= (time + 150) and sprite.return_dead_animate() != True and complete == False) or enemy_dead == True and complete == False:
                 enemy_died.showButton(gameScreen.returnTitle())
                 sprite.idle_not_animate()
+                complete = True
+                enemy_dead = True
+                cash = cash + cashpool
+                
+                
             
             
         #displays boxes and buttons
@@ -517,10 +533,50 @@ while not done:
             sprite.showDead(gameScreen.returnTitle())
             
             
-        if player_turn == False and enemy_hp > 0 :
-            print("sigma")
+        if player_turn == False and enemy_hp > 0 and complete == False :
+            cashpool = cashpool - 1
+            print(cashpool)
             player_turn = True
 
+        if ((item_barbutton and timer > num) or item_var == 1):
+                if enemy_hp > 0:  
+                    item_var = 1
+                    attack_var = 0
+                    item1_button.showButton(gameScreen.returnTitle())
+                    item2_button.showButton(gameScreen.returnTitle())
+                    item3_button.showButton(gameScreen.returnTitle())
+                    item4_button.showButton(gameScreen.returnTitle())
+                    
+                    item1 = item1_button.focusCheck(mouse_pos, mouse_click)
+                    item2 = item2_button.focusCheck(mouse_pos, mouse_click)
+                    item3 = item3_button.focusCheck(mouse_pos, mouse_click)
+                    item4 = item4_button.focusCheck(mouse_pos, mouse_click)
+                    
+                    if item1 and potion >0 :
+                        ev = pygame.event.wait()
+                        if ev.type == MOUSEUP:
+                            potion -=1
+                            print("heal!")
+                    elif item2 and tea >0:
+                        ev = pygame.event.wait()
+                        if ev.type == MOUSEUP:
+                            tea -=1
+                            print("speed up!")
+                    elif item3 and tonic >0:
+                        ev = pygame.event.wait()
+                        if ev.type == MOUSEUP:
+                            tonic-=1
+                            print("accuracy up!")
+                    elif item4 and elixer >0:
+                        ev = pygame.event.wait()
+                        if ev.type == MOUSEUP:
+                            elixer-=1
+                            print("damage up!")
+                    elif item1 or item2 or item3 or item4:
+                        ev = pygame.event.wait()
+                        if ev.type == MOUSEUP:
+                            print("you ain't got that item!")
+        
         
         
         
@@ -537,7 +593,7 @@ while not done:
             attack3_button = Button(370, 510, 130, 60, (pygame.image.load("Sprites/Buttons/Button_stab.png")))
             attack4_button = Button(600, 510, 130, 60, (pygame.image.load("Sprites/Buttons/Button_kick.png")))
 
-               
+
             attack1_button.showButton(gameScreen.returnTitle())
             attack2_button.showButton(gameScreen.returnTitle())
             attack3_button.showButton(gameScreen.returnTitle())
@@ -549,15 +605,33 @@ while not done:
             attack2_barbutton = attack2_button.focusCheck(mouse_pos, mouse_click)
             attack3_barbutton = attack3_button.focusCheck(mouse_pos, mouse_click)
             attack4_barbutton = attack4_button.focusCheck(mouse_pos, mouse_click)
+            
+        
 
             #if button has been pressed, stop static image and start attack animation
             if (attack1_barbutton or attack2_barbutton or attack3_barbutton or attack4_barbutton) and enemy_hp > 0:
                 ev = pygame.event.wait()
                 if ev.type == MOUSEUP:
-                    
-                    hero.idle_not_animate()
-                    hero.attack_animate()
-
+                    if attack1_barbutton:
+                        hero.idle_not_animate()
+                        hero.attack_animate()
+                        enemy_hp -= attack(50,12)
+                        player_turn = False
+                    elif attack2_barbutton:
+                        hero.idle_not_animate()
+                        hero.attack_animate()
+                        enemy_hp -= attack(75,8)
+                        player_turn = False
+                    elif attack3_barbutton:
+                        hero.idle_not_animate()
+                        hero.attack_animate()
+                        enemy_hp -= attack(100,5)
+                        player_turn = False
+                    elif attack4_barbutton:
+                        hero.idle_not_animate()
+                        hero.attack_animate()
+                        enemy_hp -= attack(100,5)
+                        player_turn = False
                     
                     enemy_damage_taken = str(random.randint(5,15))
                     int_enemy_damage_taken = int(enemy_damage_taken)
@@ -572,35 +646,58 @@ while not done:
 
                         sprite.idle_not_animate()
                         sprite.dead_animate()
+                        time = timer
 
                     else:
                         sprite.idle_not_animate()
                         sprite.hurt_animate()
-                    
-                
+                        
 
-            
-        #if item button has been pressed, shows item options
         
-        if ((item_barbutton and timer > num) or item_var == 1):
-            if enemy_hp > 0:  
-                item_var = 1
-                attack_var = 0
+        if player_turn == False and enemy_hp <= 0 and complete == True:
+            item_menu.showButton(gameScreen.returnTitle())
+            potion_button.showButton(gameScreen.returnTitle())
+            elixer_button.showButton(gameScreen.returnTitle())
+            tonic_button.showButton(gameScreen.returnTitle())
+            tea_button.showButton(gameScreen.returnTitle())
             
+            potion_click = potion_button.focusCheck(mouse_pos, mouse_click)
+            elixer_click = elixer_button.focusCheck(mouse_pos, mouse_click)
+            tonic_click = tonic_button.focusCheck(mouse_pos, mouse_click)
+            tea_click = tea_button.focusCheck(mouse_pos, mouse_click)
             
-                item1_button.showButton(gameScreen.returnTitle())
-                item2_button.showButton(gameScreen.returnTitle())
-                item3_button.showButton(gameScreen.returnTitle())
-                item4_button.showButton(gameScreen.returnTitle())
+            if (tea_click or tonic_click or elixer_click or potion_click):
+                ev = pygame.event.wait()
+                if ev.type == MOUSEUP:
+                    if tea_click and cash >= 4:
+                        print("sigma")
+                        cash = cash - 4
+                        print(cash)
+                    elif tonic_click and cash >= 2:
+                        print("chad")
+                        cash = cash - 2
+                        print(cash)
+                    elif elixer_click and cash >= 3:
+                        print("yippeee!")
+                        cash = cash - 3
+                        print(cash)
+                    elif potion_click and cash >= 5:
+                        print("yahoo!")
+                        cash = cash - 5
+                        print(cash)
+                        
+                    else: 
+                        print("not enough cash! only", cash, "dilla left!")
+        #if item button has been pressed, shows item options
 
 
-           
+
     #  CHECKING IF THE EXIT BUTTON HAS BEEN CLICKED OR NOT
     for event in pygame.event.get():
         # IF CLICKED THEN CLOSE THE WINDOW
         if(event.type == pygame.QUIT):
             done = True
- 
+
     pygame.display.update()
 # CLOSE THE PROGRAM
 pygame.quit()
